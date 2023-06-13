@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Timer from "./Timer";
 
-function StopWatch({ numBoxes }) {
+function StopWatch({ numBoxes, bombsVisible, isWin, setFinalTime }) {
     const [isActive, setIsActive] = useState(false);
     const [time, setTime] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
@@ -16,6 +16,7 @@ function StopWatch({ numBoxes }) {
             }, 10);
         } else {
             clearInterval(interval);
+            setFinalTime(time);
         }
         return () => {
             clearInterval(interval);
@@ -30,6 +31,13 @@ function StopWatch({ numBoxes }) {
     useEffect(() => {
         handleStart();
     }, [numBoxes])
+
+    useEffect(() => {
+        if (bombsVisible)
+            setIsPaused(true);
+        if (isWin)
+            setIsPaused(true);
+    }, [bombsVisible, isWin])
 
     return (
         <div className="stop-watch">
