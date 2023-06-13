@@ -10,6 +10,9 @@ export default function Navbar() {
                     <IconButton component={Link} to={"/"}>
                         <HomeIcon sx={{ color: "white" }} />
                     </IconButton>
+                    <ButtonGroup disableElevation >
+                        <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/minesweeper"}>Minesweeper</Button>
+                    </ButtonGroup>
                     <Box sx={{ flexGrow: 1 }}></Box>
                 </Toolbar>
             </AppBar>

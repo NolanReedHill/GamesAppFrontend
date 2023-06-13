@@ -1,0 +1,37 @@
+.buttonBox {
+    width: 30%;
+    margin: "auto";
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mineSquare {
+    background-color: gray;
+    height: 100%;
+    border: groove;
+}
+
+.mineSquare:hover {
+    cursor: pointer;
+    opacity: 50%;
+}
+
+.flagBox {
+    margin-top: 3%;
+    width: 35%;
+    display: flex;
+    justify-content: flex-start;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.timer {
+
+    display: block;
+    font-size: 1.17em;
+    margin-bottom: 1em;
+    margin-left: 5%;
+    margin-right: 0;
+    font-weight: bold;
+}

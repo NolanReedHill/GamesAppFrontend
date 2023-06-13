@@ -5,17 +5,24 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Homepage from "./pages/homepage/Homepage";
+import Minesweeper from "./pages/minesweeper/Minesweeper";
 
 export default function App() {
 
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const theme = React.useMemo(
+  const theme = useMemo(
     () =>
       createTheme({
         palette: {
           mode: prefersDarkMode ? 'dark' : 'light',
-        },
+          primary: {
+            main: "#036627"
+          },
+          secondary: {
+            main: "#02ad40"
+          },
+        }
       }),
     [prefersDarkMode],
   );
@@ -26,6 +33,7 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Homepage />} />
+          <Route path="/minesweeper" element={<Minesweeper />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
