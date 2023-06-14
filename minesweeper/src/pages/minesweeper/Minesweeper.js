@@ -23,6 +23,7 @@ export default function Minesweeper() {
             <Sound
                 playStatus={(isPlaying && volume) ? Sound.status.PLAYING : Sound.status.PAUSED}
                 url={music}
+                playFromPosition={0}
                 loop={true}
             />
             <IconButton onClick={toggleVolume} sx={{ position: "fixed", left: "0", top: "8%" }}>
