@@ -1,6 +1,6 @@
 import FlagIcon from '@mui/icons-material/Flag';
 import { useState, useEffect } from 'react'
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, TextField } from '@mui/material';
 import StopWatch from './StopWatch';
 import DigitDisplay from './DigitDisplay';
 import Popup from './Popup';
@@ -14,6 +14,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
     const [bombsVisible, setBombsVisible] = useState(false);
     const [isWin, setIsWin] = useState(false);
     const [finalTime, setFinalTime] = useState();
+    const [isForm, setIsForm] = useState(false);
 
 
     useEffect(() => {
@@ -197,6 +198,24 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
         setSize(0);
     }
 
+    async function postToLeaderBoard(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        let content = { name: data.name, time: data.time, date: data.date }
+        await fetch('http://localhost:9000/minesweeper/post-to-leaderboard', {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(content)
+        })
+            .catch((error) => console.log("Error:", error));
+        window.location.reload(true);
+    }
+
     return (
         <>
             {!size ? <h2 style={{ marginTop: "5%" }}>Choose Size...</h2> :
@@ -252,8 +271,22 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                                     <h1>You Win!</h1>
                                     <h2>It Took You : {("0" + Math.floor((finalTime / 60000) % 60)).slice(-2) +
                                         ":" + ("0" + Math.floor((finalTime / 1000) % 60)).slice(-2) + ":" + ("0" + ((finalTime / 10) % 100)).slice(-2)}</h2>
-                                    <Button variant='contained' onClick={handleClose} sx={{ width: "fit-content", margin: "auto" }}>Post to Leaderboard</Button>
-                                    <Button variant='contained' sx={{ width: "fit-content", margin: "auto", marginTop: "1%" }}>Go Back</Button>
+                                    {!isForm &&
+                                        <Button variant='contained' onClick={() => setIsForm(true)} sx={{ width: "fit-content", margin: "auto" }}>Post to Leaderboard</Button>}
+                                    {isForm &&
+                                        <form method='post' onSubmit={postToLeaderBoard} style={{ display: "flex", flexDirection: "column" }}>
+                                            <TextField required name='name' label='Your Name' sx={{ width: "fit-content", margin: "auto" }} />
+                                            <TextField placeholder={("0" + Math.floor((finalTime / 60000) % 60)).slice(-2) +
+                                                ":" + ("0" + Math.floor((finalTime / 1000) % 60)).slice(-2) + ":" + ("0" + ((finalTime / 10) % 100)).slice(-2)}
+                                                InputProps={{ readOnly: true }}
+                                                name='time'
+                                                label='Your Time'
+                                                sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }}
+                                                value={finalTime}
+                                            />
+                                            <Button type='submit' variant='contained' sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }}>Submit</Button>
+                                        </form>}
+                                    <Button variant='contained' onClick={handleClose} sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }} color='error'>Go Back</Button>
                                 </>}
                                 handleClose={handleClose}
                             />
