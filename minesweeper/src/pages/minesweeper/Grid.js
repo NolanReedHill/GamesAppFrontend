@@ -125,8 +125,65 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
     }
 
     function changeClicked(index) {
-        changeClickedTop(index);
-        changeClickedBottom(index);
+        if (!numBoxes[index] || numBoxes[index].hasBomb || numBoxes[index].isClicked || numBoxes[index].hasFlag) {
+            return;
+        }
+        const rowLength = Math.sqrt(size);
+        clickBox(index);
+        if (numBoxes[index].digit === 0) {
+            if (numBoxes[index - (rowLength + 1)] && index % rowLength !== 0) {
+                if (numBoxes[index - (rowLength + 1)].digit === 0) {
+                    changeClicked(index - (rowLength + 1));
+
+                } else {
+                    clickBox(index - (rowLength + 1));
+                }
+            }
+            changeClicked(index - rowLength);
+            if (numBoxes[index - (rowLength - 1)] && (index + 1) % rowLength !== 0) {
+                if (numBoxes[index - (rowLength - 1)].digit === 0) {
+                    changeClicked(index - (rowLength - 1));
+                } else {
+                    clickBox(index - (rowLength - 1));
+                }
+            }
+            if (numBoxes[index - 1] && index % rowLength !== 0) {
+                if (numBoxes[index - 1].digit === 0) {
+                    changeClicked(index - 1);
+                } else {
+                    clickBox(index - 1);
+                }
+            }
+            if (numBoxes[index + 1] && (index + 1) % rowLength !== 0) {
+                if (numBoxes[index + 1].digit === 0) {
+                    changeClicked(index + 1);
+                } else {
+                    clickBox(index + 1);
+                }
+            }
+            if (numBoxes[index + (rowLength - 1)] && index % rowLength !== 0) {
+                if (numBoxes[index + (rowLength - 1)].digit === 0) {
+                    changeClicked(index + (rowLength - 1));
+                } else {
+                    clickBox(index + (rowLength - 1));
+                }
+            }
+            changeClicked(index + rowLength);
+            if (numBoxes[index + (rowLength + 1)] && (index + 1) % rowLength !== 0) {
+                if (numBoxes[index + (rowLength + 1)].digit === 0) {
+                    changeClicked(index + (rowLength + 1));
+                } else {
+                    clickBox(index + (rowLength + 1));
+                }
+            }
+
+
+        }
+
+    }
+
+    function clickBox(index) {
+        numBoxes[index].isClicked = true;
     }
 
     function setDigit(index, array) {
@@ -203,8 +260,21 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
         const form = e.target;
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
-
-        let content = { name: data.name, time: data.time, date: data.date }
+        let collection;
+        switch (size) {
+            case 64:
+                collection = "minesweeperLeaderboardSmall";
+                break;
+            case 196:
+                collection = "minesweeperLeaderboardMedium";
+                break;
+            case 400:
+                collection = "minesweeperLeaderboardLarge";
+                break;
+            default:
+                collection = null;
+        }
+        let content = { name: data.name, time: finalTime, date: data.date, collection: collection }
         await fetch('http://localhost:9000/minesweeper/post-to-leaderboard', {
             method: "post",
             headers: {
@@ -282,7 +352,8 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                                                 name='time'
                                                 label='Your Time'
                                                 sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }}
-                                                value={finalTime}
+                                                value={("0" + Math.floor((finalTime / 60000) % 60)).slice(-2) +
+                                                    ":" + ("0" + Math.floor((finalTime / 1000) % 60)).slice(-2) + ":" + ("0" + ((finalTime / 10) % 100)).slice(-2)}
                                             />
                                             <Button type='submit' variant='contained' sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }}>Submit</Button>
                                         </form>}

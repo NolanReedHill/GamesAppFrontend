@@ -1,9 +1,11 @@
-import { Box, Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
-import { useState, useEffect } from 'react'
-import Grid from './Grid'
-import "./Minesweeper.css"
+import { Box, Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, } from '@mui/material';
+import { useState, useEffect } from 'react';
+import Grid from './Grid';
+import "./Minesweeper.css";
 import Sound from 'react-sound';
-import music from './Graze the Roof.mp3'
+import grazeTheRoof from './Graze the Roof.mp3';
+import checkerKnights from './checker knights.mp3';
+import raucousRoulette from './Raucous Roulette .mp3';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import Popup from './Popup';
@@ -15,9 +17,11 @@ export default function Minesweeper() {
     const [volume, setVolume] = useState(true);
     const [isLeaderboard, setIsLeaderboard] = useState(false);
     const [leaderBoardData, setLeaderboardData] = useState([]);
+    const [whichLeaderboard, setWhichLeaderboard] = useState("minesweeperLeaderboardSmall");
+    const [music, setMusic] = useState(grazeTheRoof);
 
     async function getLeaderboardData() {
-        await fetch('http://localhost:9000/minesweeper/get-leaderboard')
+        await fetch('http://localhost:9000/minesweeper/get-leaderboard/' + whichLeaderboard)
             .then((res) => res.json())
             .then((data) => setLeaderboardData(data))
             .catch((error) => console.log("Error:", error))
@@ -25,7 +29,7 @@ export default function Minesweeper() {
 
     useEffect(() => {
         getLeaderboardData();
-    }, []);
+    }, [whichLeaderboard]);
 
     function toggleVolume() {
         setVolume(!volume);
@@ -45,12 +49,26 @@ export default function Minesweeper() {
         <>
             <h1>Minesweeper</h1>
             <div className='topLeft'>
-                <Button sx={{ color: "black" }} onClick={changeIsLeaderboard}>Leaderboard</Button>
+                <Button sx={{ color: "black", }} onClick={changeIsLeaderboard}>Leaderboard</Button>
                 <Sound
                     playStatus={(isPlaying && volume) ? Sound.status.PLAYING : Sound.status.PAUSED}
+                    volume={30}
                     url={music}
                     loop={true}
                 />
+                <details style={{ marginLeft: "7%" }}>
+                    <summary style={{ marginBottom: "5%", marginTop: "5%", }}>SONGS</summary>
+                    <details-menu>
+                        <ButtonGroup orientation='vertical' size='small' >
+                            <Button sx={{ color: "black", borderColor: "black" }}
+                                disabled={music === grazeTheRoof} onClick={() => setMusic(grazeTheRoof)}>Graze the Roof</Button>
+                            <Button sx={{ color: "black", borderColor: "black" }}
+                                disabled={music === checkerKnights} onClick={() => setMusic(checkerKnights)}>Checker Knights</Button>
+                            <Button sx={{ color: "black", borderColor: "black" }}
+                                disabled={music === raucousRoulette} onClick={() => setMusic(raucousRoulette)}>Raucous Roulette</Button>
+                        </ButtonGroup>
+                    </details-menu>
+                </details>
                 <IconButton onClick={toggleVolume} >
                     Music
                     {volume ?
@@ -85,29 +103,39 @@ export default function Minesweeper() {
             {isLeaderboard &&
                 <Popup
                     content={leaderBoardData ?
-                        <TableContainer component={Paper}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Place</TableCell>
-                                        <TableCell>Player</TableCell>
-                                        <TableCell>Time (mins)</TableCell>
-                                        <TableCell>Date</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {leaderBoardData.sortedData.map((element, index) =>
-                                        <TableRow key={index}>
-                                            <TableCell>{index + 1}</TableCell>
-                                            <TableCell>{element.name}</TableCell>
-                                            <TableCell>{("0" + Math.floor((element.time / 60000) % 60)).slice(-2) +
-                                                ":" + ("0" + Math.floor((element.time / 1000) % 60)).slice(-2) + ":" + ("0" + ((element.time / 10) % 100)).slice(-2)}</TableCell>
-                                            <TableCell>{createDate(element.date.seconds)}</TableCell>
+                        <>
+                            <ButtonGroup>
+                                <Button onClick={() => setWhichLeaderboard("minesweeperLeaderboardSmall")} disabled={whichLeaderboard === "minesweeperLeaderboardSmall"}
+                                    sx={{ color: "black", borderColor: "black" }}>Small</Button>
+                                <Button onClick={() => setWhichLeaderboard("minesweeperLeaderboardMedium")} disabled={whichLeaderboard === "minesweeperLeaderboardMedium"}
+                                    sx={{ color: "black", borderColor: "black" }}>Medium</Button>
+                                <Button onClick={() => setWhichLeaderboard("minesweeperLeaderboardLarge")} disabled={whichLeaderboard === "minesweeperLeaderboardLarge"}
+                                    sx={{ color: "black", borderColor: "black" }}>Large</Button>
+                            </ButtonGroup>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Place</TableCell>
+                                            <TableCell>Player</TableCell>
+                                            <TableCell>Time (mins)</TableCell>
+                                            <TableCell>Date</TableCell>
                                         </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer> :
+                                    </TableHead>
+                                    <TableBody>
+                                        {leaderBoardData.sortedData.map((element, index) =>
+                                            <TableRow key={index}>
+                                                <TableCell>{index + 1}</TableCell>
+                                                <TableCell>{element.name}</TableCell>
+                                                <TableCell>{("0" + Math.floor((element.time / 60000) % 60)).slice(-2) +
+                                                    ":" + ("0" + Math.floor((element.time / 1000) % 60)).slice(-2) + ":" + ("0" + ((element.time / 10) % 100)).slice(-2)}</TableCell>
+                                                <TableCell>{createDate(element.date.seconds)}</TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </> :
                         <h1>Loading Leaderboard...</h1>
                     }
 
