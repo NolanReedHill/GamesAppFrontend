@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import './App.css'
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Homepage from "./pages/homepage/Homepage";

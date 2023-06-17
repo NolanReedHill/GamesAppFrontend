@@ -244,7 +244,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
             default:
                 collection = null;
         }
-        let content = { name: data.name, time: finalTime, date: data.date, collection: collection }
+        let content = { name: data.name, time: finalTime, date: data.date, collection: collection, auth: process.env.REACT_APP_PRIVATE_KEY_ID }
         await fetch('https://games-app-backend.onrender.com/minesweeper/post-to-leaderboard', {
             method: "post",
             headers: {
@@ -283,9 +283,9 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                                         <FlagIcon sx={{ display: element.hasFlag ? "block" : "none", margin: "auto", fontSize: "100%", width: "100%", height: "100%" }}
                                             color='secondary' />}
                                     {(bombsVisible && element.hasBomb && !element.isExploded) &&
-                                        <p1 className="emoji">💣</p1>}
+                                        <p className="emoji">💣</p>}
                                     {element.isExploded &&
-                                        <p1 className="emoji">💥</p1>}
+                                        <p className="emoji">💥</p>}
                                     {(element.digit !== 0 && element.isClicked) &&
                                         <DigitDisplay digit={element.digit} />}
                                 </div>
