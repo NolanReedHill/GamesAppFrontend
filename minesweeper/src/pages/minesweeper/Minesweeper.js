@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
+import { Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Grid from './Grid';
 import "./Minesweeper.css";
@@ -34,7 +34,7 @@ export default function Minesweeper() {
     };
 
     async function getLeaderboardData() {
-        await fetch('http://localhost:9000/minesweeper/get-leaderboard/' + whichLeaderboard)
+        await fetch('https://games-app-backend.onrender.com/minesweeper/get-leaderboard/' + whichLeaderboard)
             .then((res) => res.json())
             .then((data) => setLeaderboardData(data))
             .catch((error) => console.log("Error:", error))
@@ -138,7 +138,7 @@ export default function Minesweeper() {
                                     <TableBody>
                                         {leaderBoardData.sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((element, index) =>
                                             <TableRow key={index}>
-                                                <TableCell>{index + 1} {index + 1 === 1 ? "🥇" : ""} {index + 1 === 2 ? "🥈" : ""} {index + 1 === 3 ? "🥉" : ""}</TableCell>
+                                                <TableCell>{element.place} {element.place === 1 ? "🥇" : ""} {element.place === 2 ? "🥈" : ""} {element.place === 3 ? "🥉" : ""}</TableCell>
                                                 <TableCell>{element.name}</TableCell>
                                                 <TableCell>{("0" + Math.floor((element.time / 60000) % 60)).slice(-2) +
                                                     ":" + ("0" + Math.floor((element.time / 1000) % 60)).slice(-2) + ":" + ("0" + ((element.time / 10) % 100)).slice(-2)}</TableCell>

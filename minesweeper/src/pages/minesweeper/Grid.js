@@ -15,6 +15,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
     const [isWin, setIsWin] = useState(false);
     const [finalTime, setFinalTime] = useState();
     const [isForm, setIsForm] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
 
     useEffect(() => {
@@ -218,38 +219,6 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
         array[index].digit = temp;
     }
 
-    function changeClickedTop(index) {
-        const rowLength = Math.sqrt(size);
-        if (!numBoxes[index] || numBoxes[index].hasBomb)
-            return;
-        numBoxes[index].isClicked = true;
-        if (numBoxes[index].digit === 0) {
-            if (index % rowLength !== 0)
-                changeClickedTop(index - (rowLength + 1))
-            changeClickedTop(index - rowLength)
-            if ((index + 1) % rowLength !== 0)
-                changeClickedTop(index - (rowLength - 1))
-            if (index % rowLength !== 0)
-                changeClickedTop(index - 1)
-        }
-    }
-
-    function changeClickedBottom(index) {
-        const rowLength = Math.sqrt(size);
-        if (!numBoxes[index] || numBoxes[index].hasBomb)
-            return;
-        numBoxes[index].isClicked = true;
-        if (numBoxes[index].digit === 0) {
-            if ((index + 1) % rowLength)
-                changeClicked(index + 1)
-            if (index % rowLength !== 0)
-                changeClicked(index + (rowLength - 1))
-            changeClicked(index + rowLength)
-            if ((index + 1) % rowLength !== 0)
-                changeClicked(index + (rowLength + 1))
-        }
-    }
-
     function handleClose() {
         setIsWin(false);
         setSize(0);
@@ -257,6 +226,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
 
     async function postToLeaderBoard(e) {
         e.preventDefault();
+        setUploading(true);
         const form = e.target;
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
@@ -275,15 +245,15 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                 collection = null;
         }
         let content = { name: data.name, time: finalTime, date: data.date, collection: collection }
-        await fetch('http://localhost:9000/minesweeper/post-to-leaderboard', {
+        await fetch('https://games-app-backend.onrender.com/minesweeper/post-to-leaderboard', {
             method: "post",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(content)
         })
+            .then(() => window.location.reload(true))
             .catch((error) => console.log("Error:", error));
-        window.location.reload(true);
     }
 
     return (
@@ -343,7 +313,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                                         ":" + ("0" + Math.floor((finalTime / 1000) % 60)).slice(-2) + ":" + ("0" + ((finalTime / 10) % 100)).slice(-2)}</h2>
                                     {!isForm &&
                                         <Button variant='contained' onClick={() => setIsForm(true)} sx={{ width: "fit-content", margin: "auto" }}>Post to Leaderboard</Button>}
-                                    {isForm &&
+                                    {(isForm && !uploading) &&
                                         <form method='post' onSubmit={postToLeaderBoard} style={{ display: "flex", flexDirection: "column" }}>
                                             <TextField required name='name' label='Your Name' sx={{ width: "fit-content", margin: "auto" }} />
                                             <TextField placeholder={("0" + Math.floor((finalTime / 60000) % 60)).slice(-2) +
@@ -357,7 +327,10 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                                             />
                                             <Button type='submit' variant='contained' sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }}>Submit</Button>
                                         </form>}
-                                    <Button variant='contained' onClick={handleClose} sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }} color='error'>Go Back</Button>
+                                    {uploading &&
+                                        <h2>Uploading...</h2>}
+                                    {!uploading &&
+                                        <Button variant='contained' onClick={handleClose} sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }} color='error'>Go Back</Button>}
                                 </>}
                                 handleClose={handleClose}
                             />
