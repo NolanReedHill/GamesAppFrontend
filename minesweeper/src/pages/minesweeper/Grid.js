@@ -328,7 +328,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                                             <Button type='submit' variant='contained' sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }}>Submit</Button>
                                         </form>}
                                     {uploading &&
-                                        <h2>Uploading...</h2>}
+                                        <h2>Uploading... (This might take a while)</h2>}
                                     {!uploading &&
                                         <Button variant='contained' onClick={handleClose} sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }} color='error'>Go Back</Button>}
                                 </>}
