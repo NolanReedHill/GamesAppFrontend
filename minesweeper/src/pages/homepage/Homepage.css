@@ -6,3 +6,19 @@ h5,
 h6 {
     text-align: center;
 }
+
+.homepageDivision {
+    height: calc(27vh);
+}
+
+.background {
+    width: 100%;
+    height: calc(30vh);
+    position: fixed;
+    z-index: -1;
+}
+
+.homeText {
+    display: flex;
+    flex-direction: column;
+}

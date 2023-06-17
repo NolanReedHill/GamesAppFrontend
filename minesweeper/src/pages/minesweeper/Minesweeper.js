@@ -1,16 +1,18 @@
-import { Box, Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, } from '@mui/material';
+import { Box, Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Grid from './Grid';
 import "./Minesweeper.css";
 import Sound from 'react-sound';
-import grazeTheRoof from './Graze the Roof.mp3';
-import checkerKnights from './checker knights.mp3';
-import raucousRoulette from './Raucous Roulette .mp3';
+import grazeTheRoof from './sounds/Graze the Roof.mp3';
+import checkerKnights from './sounds/checker knights.mp3';
+import raucousRoulette from './sounds/Raucous Roulette .mp3';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import Popup from './Popup';
 
 export default function Minesweeper() {
+
+
 
     const [size, setSize] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -19,6 +21,17 @@ export default function Minesweeper() {
     const [leaderBoardData, setLeaderboardData] = useState([]);
     const [whichLeaderboard, setWhichLeaderboard] = useState("minesweeperLeaderboardSmall");
     const [music, setMusic] = useState(grazeTheRoof);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
 
     async function getLeaderboardData() {
         await fetch('http://localhost:9000/minesweeper/get-leaderboard/' + whichLeaderboard)
@@ -94,7 +107,7 @@ export default function Minesweeper() {
                 </div>}
             {size !== 0 &&
                 <div className='buttonBox'>
-                    <Button variant='contained' sx={{ margin: "auto" }} onClick={() => {
+                    <Button variant='contained' sx={{ margin: "auto", }} onClick={() => {
                         setSize(0);
                         setIsPlaying(false);
                     }}>Start Over</Button>
@@ -123,9 +136,9 @@ export default function Minesweeper() {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {leaderBoardData.sortedData.map((element, index) =>
+                                        {leaderBoardData.sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((element, index) =>
                                             <TableRow key={index}>
-                                                <TableCell>{index + 1}</TableCell>
+                                                <TableCell>{index + 1} {index + 1 === 1 ? "🥇" : ""} {index + 1 === 2 ? "🥈" : ""} {index + 1 === 3 ? "🥉" : ""}</TableCell>
                                                 <TableCell>{element.name}</TableCell>
                                                 <TableCell>{("0" + Math.floor((element.time / 60000) % 60)).slice(-2) +
                                                     ":" + ("0" + Math.floor((element.time / 1000) % 60)).slice(-2) + ":" + ("0" + ((element.time / 10) % 100)).slice(-2)}</TableCell>
@@ -135,6 +148,15 @@ export default function Minesweeper() {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={leaderBoardData.sortedData.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
                         </> :
                         <h1>Loading Leaderboard...</h1>
                     }
