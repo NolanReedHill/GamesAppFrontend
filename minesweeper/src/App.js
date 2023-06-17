@@ -9,23 +9,17 @@ import Minesweeper from "./pages/minesweeper/Minesweeper";
 
 export default function App() {
 
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: prefersDarkMode ? 'dark' : 'light',
-          primary: {
-            main: "#036627"
-          },
-          secondary: {
-            main: "#02ad40"
-          },
-        }
-      }),
-    [prefersDarkMode],
-  );
+  const theme =
+    createTheme({
+      palette: {
+        primary: {
+          main: "#036627"
+        },
+        secondary: {
+          main: "#02ad40"
+        },
+      }
+    });
 
   return (
     <ThemeProvider theme={theme}>
