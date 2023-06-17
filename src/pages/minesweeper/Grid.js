@@ -278,7 +278,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
             default:
                 collection = null;
         }
-        let content = { name: data.name, time: finalTime, date: data.date, collection: collection, }
+        let content = { name: data.name, time: finalTime, date: data.date, collection: collection, auth: process.env.REACT_APP_PRIVATE_KEY_ID }
         await fetch('https://games-app-backend.onrender.com/minesweeper/post-to-leaderboard', {
             method: "post",
             headers: {
