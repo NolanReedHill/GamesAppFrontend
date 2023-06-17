@@ -16,6 +16,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
     const [finalTime, setFinalTime] = useState();
     const [isForm, setIsForm] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [firstClick, setFirstClick] = useState(false);
 
 
     useEffect(() => {
@@ -40,8 +41,8 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
             setNumFlags();
             setBombsVisible(false);
             setIsWin(false);
+            setFirstClick(false);
         }
-        let bombIndexes = [];
         let tempNumBombs;
         switch (size) {
             case 64:
@@ -62,23 +63,9 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
             default:
                 setNumBombs();
         }
-        const numArray = []
-        for (let i = 0; i < tempNumBombs; i++) {
-            let temp = Math.floor(Math.random() * size)
-            while (numArray.find(element => element === temp)) {
-                temp = Math.floor(Math.random() * size)
-            }
-            numArray.push(temp);
-            bombIndexes.push(temp);
-        }
-
         let temp = []
         for (let i = 0; i < size; i++) {
-            let isBomb = bombIndexes.includes(i);
-            temp.push({ key: i, hasFlag: false, isClicked: false, hasBomb: isBomb, isExploded: false });
-        }
-        for (let i = 0; i < temp.length; i++) {
-            setDigit(i, temp);
+            temp.push({ key: i, hasFlag: false, isClicked: false, isExploded: false });
         }
         setNumBoxes(temp);
 
@@ -88,9 +75,56 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
         setNumBoxes(numBoxes);
     }, [update])
 
+    function assignBombs(index) {
+        let exclude = []
+        exclude = getExclusions(index);
+        const bombIndexes = [];
+        for (let i = 0; i < numBombs; i++) {
+            let temp = Math.floor(Math.random() * size)
+            while (bombIndexes.includes(temp) || exclude.includes(temp)) {
+                temp = Math.floor(Math.random() * size);
+            }
+            bombIndexes.push(temp);
+        }
+        numBoxes.forEach((box, index) => {
+            let isBomb = bombIndexes.includes(index);
+            box.hasBomb = isBomb;
+        })
+        for (let i = 0; i < size; i++) {
+            setDigit(i, numBoxes);
+        }
+    }
+
+    function getExclusions(index) {
+        let rowLength = Math.sqrt(size);
+        let temp = [];
+        temp.push(index);
+        if (index >= rowLength && index % rowLength !== 0)
+            temp.push(index - (rowLength + 1));
+        if (index >= rowLength)
+            temp.push(index - rowLength);
+        if (index >= rowLength && (index + 1) % rowLength !== 0)
+            temp.push(index - (rowLength - 1));
+        if (index % rowLength !== 0)
+            temp.push(index - 1);
+        if ((index + 1) % rowLength !== 0)
+            temp.push(index + 1);
+        if (index + rowLength < size && index % rowLength !== 0)
+            temp.push(index + (rowLength - 1));
+        if (index + rowLength < size)
+            temp.push(index + rowLength);
+        if (index + rowLength < size && (index + 1) % rowLength !== 0)
+            temp.push(index + (rowLength + 1));
+        return temp;
+
+    }
 
     function handleClick(e, index) {
         e.preventDefault();
+        if (!firstClick) {
+            setFirstClick(true);
+            assignBombs(index);
+        }
         if (numBoxes[index].isClicked)
             return;
         if (e.type === 'contextmenu') {
