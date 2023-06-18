@@ -177,12 +177,12 @@ export default function Minesweeper() {
                     handleClose={changeShowRules}
                     content={<>
                         <h2>Rules:</h2>
-                        <h4>This is the classic game minesweeper. Click on squares to reveal how many bombs are adjacent. </h4>
+                        <h3>This is the classic game minesweeper. Click on squares to reveal how many bombs are adjacent. </h3>
                         <h4>Be careful not to click a bomb, or you lose!</h4>
                         <h2>Controls:</h2>
-                        <h4>Left Click: reveal a square.</h4>
-                        <h4>Right Click: Flag a square.</h4>
-                        <h4>Spacebar: Flag a square or reveal adjacent squares. </h4>
+                        <h3>Left Click: reveal a square.</h3>
+                        <h3>Right Click: Flag a square.</h3>
+                        <h3>Spacebar: Flag a square or reveal adjacent squares. </h3>
                     </>}
                 />}
         </>
