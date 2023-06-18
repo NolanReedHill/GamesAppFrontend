@@ -13,7 +13,10 @@ export default function Homepage() {
         <>
             <img src={background} className='background' />
             <div className='homepageDivision' style={{ background: background }}>
-                <h1 style={{ fontSize: "calc(5vw)", background: "rgba(128, 235, 52, .5)", width: "fit-content", margin: "auto", marginTop: "3%", position: "fixed" }}>Welcome to My Games Page!</h1>
+                <h1 style={{
+                    fontSize: "calc(5vw)", background: "rgba(128, 235, 52, .5)", width: "fit-content",
+                    margin: "auto", marginTop: "3%", position: "fixed", left: "15%", right: "15%"
+                }}>Welcome to My Games Page!</h1>
             </div>
             <div className='homeText'>
                 <h2>I made this page to create some games with React. Feel free to check them out and post to the leaderboard!</h2>
