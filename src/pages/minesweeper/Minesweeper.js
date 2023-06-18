@@ -9,6 +9,7 @@ import raucousRoulette from './sounds/Raucous Roulette .mp3';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import Popup from './Popup';
+import HelpIcon from '@mui/icons-material/Help';
 
 export default function Minesweeper() {
 
@@ -23,6 +24,7 @@ export default function Minesweeper() {
     const [music, setMusic] = useState(grazeTheRoof);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [showRules, setShowRules] = useState(false);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -58,10 +60,17 @@ export default function Minesweeper() {
         return newDate.toDateString();
     }
 
+    function changeShowRules() {
+        setShowRules(!showRules);
+    }
+
     return (
         <>
             <h1>Minesweeper</h1>
             <div className='topLeft'>
+                <IconButton sx={{ width: "fit-content" }} onClick={changeShowRules}>
+                    <HelpIcon />
+                </IconButton>
                 <Button sx={{ color: "black", }} onClick={changeIsLeaderboard}>Leaderboard</Button>
                 <Sound
                     playStatus={(isPlaying && volume) ? Sound.status.PLAYING : Sound.status.PAUSED}
@@ -162,6 +171,19 @@ export default function Minesweeper() {
                     }
 
                     handleClose={changeIsLeaderboard}
+                />}
+            {showRules &&
+                <Popup
+                    handleClose={changeShowRules}
+                    content={<>
+                        <h2>Rules:</h2>
+                        <h4>This is the classic game minesweeper. Click on squares to reveal how many bombs are adjacent. </h4>
+                        <h4>Be careful not to click a bomb, or you lose!</h4>
+                        <h2>Controls:</h2>
+                        <h4>Left Click: reveal a square.</h4>
+                        <h4>Right Click: Flag a square.</h4>
+                        <h4>Spacebar: Flag a square or reveal adjacent squares. </h4>
+                    </>}
                 />}
         </>
     )

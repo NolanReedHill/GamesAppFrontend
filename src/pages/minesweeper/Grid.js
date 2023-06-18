@@ -17,7 +17,13 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
     const [isForm, setIsForm] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [firstClick, setFirstClick] = useState(false);
+    const [whichSquareHover, setWhichSquareHover] = useState(-1);
 
+    window.addEventListener('keydown', function (e) {
+        if (e.key == " " && e.target == document.body) {
+            e.preventDefault();
+        }
+    });
 
     useEffect(() => {
         if (numBoxes.length > 0) {
@@ -43,22 +49,18 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
             setIsWin(false);
             setFirstClick(false);
         }
-        let tempNumBombs;
         switch (size) {
             case 64:
                 setNumBombs(10);
                 setNumFlags(10);
-                tempNumBombs = 10;
                 break;
             case 196:
                 setNumBombs(40);
                 setNumFlags(40);
-                tempNumBombs = 40;
                 break;
             case 400:
                 setNumBombs(99);
                 setNumFlags(99);
-                tempNumBombs = 99;
                 break;
             default:
                 setNumBombs();
@@ -154,71 +156,175 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                 setUpdate(!update)
                 return;
             }
-            changeClicked(index);
+            let addFlags = changeClicked(index);
+            setNumFlags(numFlags + addFlags);
             setUpdate(!update);
         }
     }
 
     function changeClicked(index) {
-        if (!numBoxes[index] || numBoxes[index].hasBomb || numBoxes[index].isClicked || numBoxes[index].hasFlag) {
-            return;
+        let addFlags = 0;
+        if (!numBoxes[index] || numBoxes[index].hasBomb || numBoxes[index].isClicked) {
+            return 0;
         }
         const rowLength = Math.sqrt(size);
-        clickBox(index);
+        addFlags += clickBox(index);
         if (numBoxes[index].digit === 0) {
             if (numBoxes[index - (rowLength + 1)] && index % rowLength !== 0) {
                 if (numBoxes[index - (rowLength + 1)].digit === 0) {
-                    changeClicked(index - (rowLength + 1));
+                    addFlags += changeClicked(index - (rowLength + 1));
 
                 } else {
-                    clickBox(index - (rowLength + 1));
+                    addFlags += clickBox(index - (rowLength + 1));
                 }
             }
-            changeClicked(index - rowLength);
+            addFlags += changeClicked(index - rowLength);
             if (numBoxes[index - (rowLength - 1)] && (index + 1) % rowLength !== 0) {
                 if (numBoxes[index - (rowLength - 1)].digit === 0) {
-                    changeClicked(index - (rowLength - 1));
+                    addFlags += changeClicked(index - (rowLength - 1));
                 } else {
-                    clickBox(index - (rowLength - 1));
+                    addFlags += clickBox(index - (rowLength - 1));
                 }
             }
             if (numBoxes[index - 1] && index % rowLength !== 0) {
                 if (numBoxes[index - 1].digit === 0) {
-                    changeClicked(index - 1);
+                    addFlags += changeClicked(index - 1);
                 } else {
-                    clickBox(index - 1);
+                    addFlags += clickBox(index - 1);
                 }
             }
             if (numBoxes[index + 1] && (index + 1) % rowLength !== 0) {
                 if (numBoxes[index + 1].digit === 0) {
-                    changeClicked(index + 1);
+                    addFlags += changeClicked(index + 1);
                 } else {
-                    clickBox(index + 1);
+                    addFlags += clickBox(index + 1);
                 }
             }
             if (numBoxes[index + (rowLength - 1)] && index % rowLength !== 0) {
                 if (numBoxes[index + (rowLength - 1)].digit === 0) {
-                    changeClicked(index + (rowLength - 1));
+                    addFlags += changeClicked(index + (rowLength - 1));
                 } else {
-                    clickBox(index + (rowLength - 1));
+                    addFlags += clickBox(index + (rowLength - 1));
                 }
             }
-            changeClicked(index + rowLength);
+            addFlags += changeClicked(index + rowLength);
             if (numBoxes[index + (rowLength + 1)] && (index + 1) % rowLength !== 0) {
                 if (numBoxes[index + (rowLength + 1)].digit === 0) {
-                    changeClicked(index + (rowLength + 1));
+                    addFlags += changeClicked(index + (rowLength + 1));
                 } else {
-                    clickBox(index + (rowLength + 1));
+                    addFlags += clickBox(index + (rowLength + 1));
                 }
             }
-
-
         }
-
+        return addFlags;
     }
 
     function clickBox(index) {
         numBoxes[index].isClicked = true;
+        if (numBoxes[index].hasFlag) {
+            numBoxes[index].hasFlag = false;
+            return 1;
+        }
+        return 0;
+
+    }
+
+    function handleSpace(e) {
+        if (e.key !== " ")
+            return;
+        if (whichSquareHover === -1)
+            return;
+        if (!numBoxes[whichSquareHover].isClicked) {
+            if (!numBoxes[whichSquareHover].hasFlag) {
+                numBoxes[whichSquareHover].hasFlag = true;
+                setNumFlags(numFlags - 1);
+                setUpdate(!update);
+            }
+            else {
+                numBoxes[whichSquareHover].hasFlag = false;
+                setNumFlags(numFlags + 1);
+                setUpdate(!update);
+            }
+            return;
+        }
+        else {
+            let temp = 0;
+            let unclickedBoxes = [];
+            const rowLength = Math.sqrt(size);
+            if (whichSquareHover % rowLength !== 0 && numBoxes[whichSquareHover - (rowLength + 1)]) {
+                if (numBoxes[whichSquareHover - (rowLength + 1)].hasFlag) {
+                    temp++;
+                }
+                else if (!numBoxes[whichSquareHover - (rowLength + 1)].isClicked)
+                    unclickedBoxes.push(whichSquareHover - (rowLength + 1));
+            }
+            if (numBoxes[whichSquareHover - rowLength]) {
+                if (numBoxes[whichSquareHover - rowLength].hasFlag) {
+                    temp++;
+                }
+                else if (!numBoxes[whichSquareHover - rowLength].isClicked)
+                    unclickedBoxes.push(whichSquareHover - rowLength);
+            }
+            if ((whichSquareHover + 1) % rowLength !== 0 && numBoxes[whichSquareHover - (rowLength - 1)]) {
+                if (numBoxes[whichSquareHover - (rowLength - 1)].hasFlag) {
+                    temp++;
+                }
+                else if (!numBoxes[whichSquareHover - (rowLength - 1)].isClicked)
+                    unclickedBoxes.push(whichSquareHover - (rowLength - 1));
+            }
+            if (whichSquareHover % rowLength !== 0 && numBoxes[whichSquareHover - 1]) {
+                if (numBoxes[whichSquareHover - 1].hasFlag) {
+                    temp++;
+                }
+                else if (!numBoxes[whichSquareHover - 1].isClicked)
+                    unclickedBoxes.push(whichSquareHover - 1);
+            }
+            if ((whichSquareHover + 1) % rowLength !== 0 && numBoxes[whichSquareHover + 1]) {
+                if (numBoxes[whichSquareHover + 1].hasFlag) {
+                    temp++;
+                }
+                else if (!numBoxes[whichSquareHover + 1].isClicked)
+                    unclickedBoxes.push(whichSquareHover + 1);
+            }
+            if (whichSquareHover % rowLength !== 0 && numBoxes[whichSquareHover + (rowLength - 1)]) {
+                if (numBoxes[whichSquareHover + (rowLength - 1)].hasFlag) {
+                    temp++;
+                }
+                else if (!numBoxes[whichSquareHover + (rowLength - 1)].isClicked)
+                    unclickedBoxes.push(whichSquareHover + (rowLength - 1));
+            }
+            if (numBoxes[whichSquareHover + rowLength]) {
+                if (numBoxes[whichSquareHover + rowLength].hasFlag) {
+                    temp++;
+                }
+                else if (!numBoxes[whichSquareHover + rowLength].isClicked)
+                    unclickedBoxes.push(whichSquareHover + rowLength);
+            }
+            if ((whichSquareHover + 1) % rowLength !== 0 && numBoxes[whichSquareHover + (rowLength + 1)]) {
+                if (numBoxes[whichSquareHover + (rowLength + 1)].hasFlag) {
+                    temp++;
+                }
+                else if (!numBoxes[whichSquareHover + (rowLength + 1)].isClicked)
+                    unclickedBoxes.push(whichSquareHover + (rowLength + 1));
+            }
+            if (temp >= numBoxes[whichSquareHover].digit) {
+                unclickedBoxes.forEach((index) => {
+                    changeClickedSpace(index);
+                })
+            }
+            setUpdate(!update);
+        }
+    }
+    function changeClickedSpace(index) {
+        if (numBoxes[index].hasBomb) {
+            numBoxes[index].isExploded = true;
+            numBoxes[index].isClicked = true;
+            setBombsVisible(true);
+            setUpdate(!update)
+            return;
+        }
+        changeClicked(index);
+
     }
 
     function setDigit(index, array) {
@@ -294,14 +400,14 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
     return (
         <>
             {!size ? <h2 style={{ marginTop: "5%" }}>Choose Size...</h2> :
-                <>
+                <div onKeyUp={handleSpace} tabIndex="0" className='gridBox' onMouseLeave={() => setWhichSquareHover(-1)} onKeyDown={(e) => e.preventDefault()}>
                     <div className='flagBox'>
                         <FlagIcon color='secondary' />
                         <h3 style={{ textAlign: "left", marginTop: "0" }}>{numFlags}</h3>
                         <h3 style={{ textAlign: "left", marginTop: "0", marginLeft: "5%" }}>Time:</h3>
                         <StopWatch numBoxes={numBoxes} bombsVisible={bombsVisible} isWin={isWin} setFinalTime={setFinalTime} />
                     </div>
-                    <Grid container columns={Math.sqrt(size)} width={"35%"} sx={{ margin: "auto", aspectRatio: "1", marginBottom: "5%" }}>
+                    <Grid container columns={Math.sqrt(size)} width={"100%"} sx={{ margin: "auto", aspectRatio: "1", marginBottom: "5%" }}>
                         {numBoxes.map((element) =>
                             <Grid item xs={1} key={element.key} sx={{ aspectRatio: "1" }}>
                                 <div
@@ -309,6 +415,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                                     key={"msq" + element.key}
                                     onClick={(e) => handleClick(e, element.key)}
                                     onContextMenu={(e) => handleClick(e, element.key)}
+                                    onMouseOver={() => setWhichSquareHover(element.key)}
                                     style={{
                                         backgroundColor: element.isClicked ? "#bfbfbf" : "auto", cursor: element.isClicked ? "default" : "pointer",
                                         opacity: element.isClicked ? "100%" : "auto"
@@ -371,7 +478,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                             />
 
                         </>}
-                </>
+                </div>
             }
 
         </>

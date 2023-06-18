@@ -20,7 +20,6 @@
 
 .flagBox {
     margin-top: 3%;
-    width: 35%;
     display: flex;
     justify-content: flex-start;
     margin-left: auto;
@@ -105,4 +104,13 @@
     justify-content: flex-start;
     left: 1%;
 
+}
+
+.gridBox:focus {
+    outline: none;
+}
+
+.gridBox {
+    margin: auto;
+    width: 35%;
 }
