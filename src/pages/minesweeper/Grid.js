@@ -400,7 +400,11 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
     return (
         <>
             {!size ? <h2 style={{ marginTop: "5%" }}>Choose Size...</h2> :
-                <div onKeyUp={handleSpace} tabIndex="0" className='gridBox' onMouseLeave={() => setWhichSquareHover(-1)} onKeyDown={(e) => e.preventDefault()}>
+                <div tabIndex="0" className='gridBox' onMouseLeave={() => setWhichSquareHover(-1)}
+                    onKeyDown={(e) => {
+                        e.preventDefault()
+                        handleSpace(e);
+                    }}>
                     <div className='flagBox'>
                         <FlagIcon color='secondary' />
                         <h3 style={{ textAlign: "left", marginTop: "0" }}>{numFlags}</h3>
