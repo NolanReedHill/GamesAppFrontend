@@ -124,7 +124,7 @@ export default function Minesweeper() {
             <Grid size={size} setSize={setSize} setIsPlaying={setIsPlaying} />
             {isLeaderboard &&
                 <Popup
-                    content={leaderBoardData ?
+                    content={leaderBoardData.sortedData.length > 0 ?
                         <>
                             <ButtonGroup>
                                 <Button onClick={() => setWhichLeaderboard("minesweeperLeaderboardSmall")} disabled={whichLeaderboard === "minesweeperLeaderboardSmall"}
