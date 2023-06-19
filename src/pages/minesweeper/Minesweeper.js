@@ -25,6 +25,7 @@ export default function Minesweeper() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [showRules, setShowRules] = useState(false);
+    const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -36,9 +37,11 @@ export default function Minesweeper() {
     };
 
     async function getLeaderboardData() {
+        setLoadingLeaderboard(true);
         await fetch('https://games-app-backend.onrender.com/minesweeper/get-leaderboard/' + whichLeaderboard)
             .then((res) => res.json())
             .then((data) => setLeaderboardData(data))
+            .then(() => setLoadingLeaderboard(false))
             .catch((error) => console.log("Error:", error))
     }
 
@@ -124,7 +127,7 @@ export default function Minesweeper() {
             <Grid size={size} setSize={setSize} setIsPlaying={setIsPlaying} />
             {isLeaderboard &&
                 <Popup
-                    content={leaderBoardData.sortedData.length > 0 ?
+                    content={!loadingLeaderboard ?
                         <>
                             <ButtonGroup>
                                 <Button onClick={() => setWhichLeaderboard("minesweeperLeaderboardSmall")} disabled={whichLeaderboard === "minesweeperLeaderboardSmall"}
