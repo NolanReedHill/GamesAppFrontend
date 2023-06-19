@@ -20,7 +20,7 @@ export default function Minesweeper() {
     const [volume, setVolume] = useState(true);
     const [isLeaderboard, setIsLeaderboard] = useState(false);
     const [leaderBoardData, setLeaderboardData] = useState([]);
-    const [whichLeaderboard, setWhichLeaderboard] = useState("minesweeperLeaderboardSmall");
+    const [whichLeaderboard, setWhichLeaderboard] = useState(0);
     const [music, setMusic] = useState(grazeTheRoof);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -38,16 +38,26 @@ export default function Minesweeper() {
 
     async function getLeaderboardData() {
         setLoadingLeaderboard(true);
-        await fetch('https://games-app-backend.onrender.com/minesweeper/get-leaderboard/' + whichLeaderboard)
+        const temp = [];
+        await fetch('https://games-app-backend.onrender.com/minesweeper/get-leaderboard/minesweeperLeaderboardSmall')
             .then((res) => res.json())
-            .then((data) => setLeaderboardData(data))
+            .then((data) => temp.push(data))
+            .catch((error) => console.log("Error:", error));
+        await fetch('https://games-app-backend.onrender.com/minesweeper/get-leaderboard/minesweeperLeaderboardMedium')
+            .then((res) => res.json())
+            .then((data) => temp.push(data))
+            .catch((error) => console.log("Error:", error));
+        await fetch('https://games-app-backend.onrender.com/minesweeper/get-leaderboard/minesweeperLeaderboardLarge')
+            .then((res) => res.json())
+            .then((data) => temp.push(data))
+            .then(() => setLeaderboardData(temp))
             .then(() => setLoadingLeaderboard(false))
-            .catch((error) => console.log("Error:", error))
+            .catch((error) => console.log("Error:", error));
     }
 
     useEffect(() => {
         getLeaderboardData();
-    }, [whichLeaderboard]);
+    }, []);
 
     function toggleVolume() {
         setVolume(!volume);
@@ -130,11 +140,11 @@ export default function Minesweeper() {
                     content={!loadingLeaderboard ?
                         <>
                             <ButtonGroup>
-                                <Button onClick={() => setWhichLeaderboard("minesweeperLeaderboardSmall")} disabled={whichLeaderboard === "minesweeperLeaderboardSmall"}
+                                <Button onClick={() => setWhichLeaderboard(0)} disabled={whichLeaderboard === 0}
                                     sx={{ color: "black", borderColor: "black" }}>Small</Button>
-                                <Button onClick={() => setWhichLeaderboard("minesweeperLeaderboardMedium")} disabled={whichLeaderboard === "minesweeperLeaderboardMedium"}
+                                <Button onClick={() => setWhichLeaderboard(1)} disabled={whichLeaderboard === 1}
                                     sx={{ color: "black", borderColor: "black" }}>Medium</Button>
-                                <Button onClick={() => setWhichLeaderboard("minesweeperLeaderboardLarge")} disabled={whichLeaderboard === "minesweeperLeaderboardLarge"}
+                                <Button onClick={() => setWhichLeaderboard(2)} disabled={whichLeaderboard === 2}
                                     sx={{ color: "black", borderColor: "black" }}>Large</Button>
                             </ButtonGroup>
                             <TableContainer component={Paper}>
@@ -148,7 +158,7 @@ export default function Minesweeper() {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {leaderBoardData.sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((element, index) =>
+                                        {leaderBoardData[whichLeaderboard].sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((element, index) =>
                                             <TableRow key={index}>
                                                 <TableCell>{element.place} {element.place === 1 ? "🥇" : ""} {element.place === 2 ? "🥈" : ""} {element.place === 3 ? "🥉" : ""}</TableCell>
                                                 <TableCell>{element.name}</TableCell>
@@ -163,7 +173,7 @@ export default function Minesweeper() {
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25]}
                                 component="div"
-                                count={leaderBoardData.sortedData.length}
+                                count={leaderBoardData[whichLeaderboard].sortedData.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 onPageChange={handleChangePage}
