@@ -48,6 +48,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
             setBombsVisible(false);
             setIsWin(false);
             setFirstClick(false);
+            setIsForm(false);
         }
         switch (size) {
             case 64:
@@ -402,7 +403,8 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
             {!size ? <h2 style={{ marginTop: "5%" }}>Choose Size...</h2> :
                 <div tabIndex="0" className='gridBox' onMouseLeave={() => setWhichSquareHover(-1)}
                     onKeyDown={(e) => {
-                        e.preventDefault()
+                        if (e.key === " ")
+                            e.preventDefault()
                         handleSpace(e);
                     }}>
                     <div className='flagBox'>
