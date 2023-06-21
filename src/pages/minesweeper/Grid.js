@@ -400,7 +400,11 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
 
     return (
         <>
-            {!size ? <h2 style={{ marginTop: "5%" }}>Choose Size...</h2> :
+            {!size ?
+                <div style={{ height: "58vh" }}>
+                    <h2 style={{ marginTop: "5%" }}>Choose Size...</h2>
+                </div>
+                :
                 <div tabIndex="0" className='gridBox' onMouseLeave={() => setWhichSquareHover(-1)}
                     onKeyDown={(e) => {
                         if (e.key === " ")

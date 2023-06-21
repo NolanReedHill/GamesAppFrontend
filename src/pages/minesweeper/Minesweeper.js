@@ -92,7 +92,7 @@ export default function Minesweeper() {
                     loop={true}
                 />
                 <details style={{ marginLeft: "7%" }}>
-                    <summary style={{ marginBottom: "5%", marginTop: "5%", }}>SONGS</summary>
+                    <summary style={{ marginBottom: "5%", marginTop: "5%", }} className='songSummary'>SONGS</summary>
                     <details-menu>
                         <ButtonGroup orientation='vertical' size='small' >
                             <Button sx={{ color: "black", borderColor: "black" }}

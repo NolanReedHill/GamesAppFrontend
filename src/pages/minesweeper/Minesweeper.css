@@ -2,8 +2,7 @@
     width: 30%;
     margin: auto;
     display: flex;
-    margin-left: auto;
-    margin-right: auto;
+    justify-content: space-evenly;
 }
 
 .mineSquare {
@@ -113,4 +112,8 @@
 .gridBox {
     margin: auto;
     width: 35%;
+}
+
+.songSummary:hover {
+    cursor: pointer;
 }

@@ -12,6 +12,7 @@ export default function Navbar() {
                     </IconButton>
                     <ButtonGroup disableElevation >
                         <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/minesweeper"}>Minesweeper</Button>
+                        <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/ticTacToe"}>Tic Tac Toe</Button>
                     </ButtonGroup>
                     <Box sx={{ flexGrow: 1 }}></Box>
                 </Toolbar>
