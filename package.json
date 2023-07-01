@@ -17,6 +17,9 @@
     "react-router-dom": "^6.12.1",
     "react-scripts": "5.0.1",
     "react-sound": "^1.2.0",
+    "stream-chat": "^8.9.0",
+    "stream-chat-react": "^10.8.5",
+    "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

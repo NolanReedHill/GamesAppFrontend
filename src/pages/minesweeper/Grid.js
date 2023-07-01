@@ -236,12 +236,12 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
         if (whichSquareHover === -1)
             return;
         if (!numBoxes[whichSquareHover].isClicked) {
-            if (!numBoxes[whichSquareHover].hasFlag) {
+            if (!numBoxes[whichSquareHover].hasFlag && numFlags) {
                 numBoxes[whichSquareHover].hasFlag = true;
                 setNumFlags(numFlags - 1);
                 setUpdate(!update);
             }
-            else {
+            else if (numBoxes[whichSquareHover].hasFlag) {
                 numBoxes[whichSquareHover].hasFlag = false;
                 setNumFlags(numFlags + 1);
                 setUpdate(!update);

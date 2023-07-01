@@ -3,7 +3,7 @@ import background from './images/board games.jpg';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { IconButton, ButtonGroup } from '@mui/material';
+import { IconButton, ButtonGroup, Divider } from '@mui/material';
 
 export default function Homepage() {
 
@@ -18,6 +18,12 @@ export default function Homepage() {
             }}>Welcome to My Games Page!</h1>
             <div className='homeText'>
                 <h2>I made this page to create some games with React. Feel free to check them out and post to the leaderboard!</h2>
+                <h2>Games that are online multiplayer will require you to make an account. </h2>
+                <a href='http://localhost:3000/login' style={{ margin: "auto" }}>Already have an account? Log in here.</a>
+                <a href='http://localhost:3000/signup' style={{ margin: "auto" }}> Need an account? Sign up here. </a>
+
+                <Divider sx={{ marginTop: "4%", backgroundColor: "black", }} />
+                <h3>Check me out!</h3>
                 <ButtonGroup sx={{ width: "10%", margin: "auto", justifyContent: "center" }}>
                     <a href='https://www.linkedin.com/in/nolan-hill-b980981b1/' target='_blank' rel='noreferrer'>
                         <IconButton>
