@@ -17,8 +17,8 @@ export default function Homepage() {
             <div className='homeText'>
                 <h2>I made this page to create some games with React. Feel free to check them out and post to the leaderboard!</h2>
                 <h2>Games that are online multiplayer will require you to make an account. </h2>
-                <a href='http://localhost:3000/login' style={{ margin: "auto" }}>Already have an account? Log in here.</a>
-                <a href='http://localhost:3000/signup' style={{ margin: "auto" }}> Need an account? Sign up here. </a>
+                <a href='https://nolans-games.netlify.app/login' style={{ margin: "auto" }}>Already have an account? Log in here.</a>
+                <a href='https://nolans-games.netlify.app/signup' style={{ margin: "auto" }}> Need an account? Sign up here. </a>
 
                 <Divider sx={{ marginTop: "4%", backgroundColor: "black", }} />
                 <h3>Check me out!</h3>
