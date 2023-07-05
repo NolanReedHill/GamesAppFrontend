@@ -113,6 +113,7 @@
 .gridBox {
     margin: auto;
     width: 35%;
+    padding-bottom: 30px;
 }
 
 .songSummary:hover {
