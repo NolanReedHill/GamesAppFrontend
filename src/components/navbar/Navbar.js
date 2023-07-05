@@ -1,15 +1,19 @@
-import { AppBar, Toolbar, Button, Box, IconButton, ButtonGroup, Typography } from '@mui/material'
+import { AppBar, Toolbar, Button, Box, IconButton, ButtonGroup, Typography, Snackbar, Alert, Dialog, DialogActions, DialogTitle, DialogContent } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
-import { Link, Outlet, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useState } from 'react';
 import Cookies from "universal-cookie";
 
 export default function Navbar({ setIsAuth, isAuth, client }) {
 
+    const [logout, setLogout] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const cookies = new Cookies();
 
     const logOut = () => {
+        setLogout(true);
         cookies.remove("token");
         cookies.remove("userId");
         cookies.remove("firstName");
@@ -35,19 +39,35 @@ export default function Navbar({ setIsAuth, isAuth, client }) {
                         <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/ticTacToe"}>Tic Tac Toe</Button>
                     </ButtonGroup>
                     {isAuth ?
-                        <IconButton onClick={logOut} component={Link} to={"/"}>
-                            <label style={{ color: "white", position: "fixed", right: "4%", top: "1.4%" }} className='buttonLabel'>Logout</label>
+                        <IconButton onClick={() => setIsOpen(true)} component={Link} to={"/"} title='Logout'>
                             <LogoutIcon sx={{ color: "white", position: "fixed", right: "2%" }} />
                         </IconButton>
                         :
-                        <IconButton component={Link} to={"/login"}>
-                            <label style={{ color: "white", position: "fixed", right: "4%", top: "1.4%" }} className='buttonLabel'>Login</label>
+                        <IconButton component={Link} to={"/login"} title='Login'>
                             <LoginIcon sx={{ color: "white", position: "fixed", right: "2%" }} />
                         </IconButton>}
                     <Box sx={{ flexGrow: 1 }}></Box>
                 </Toolbar>
             </AppBar>
             <Toolbar />
+            <Dialog open={isOpen}
+                onClose={() => setIsOpen(false)}>
+                <DialogTitle>
+                    Logout?
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={() => {
+                        setIsOpen(false);
+                        logOut();
+                    }}
+                        color="primary">
+                        Confirm</Button>
+                    <Button onClick={() => setIsOpen(false)} color='error'>Go Back</Button>
+                </DialogActions>
+            </Dialog>
+            <Snackbar open={logout} autoHideDuration={4000} onClose={() => setLogout(false)}>
+                <Alert onClose={() => setLogout(false)} severity="success" sx={{ width: '100%' }}>Logged out of account</Alert>
+            </Snackbar>
         </>
     )
 }

@@ -4,6 +4,7 @@ import { Grid, Button, TextField } from '@mui/material';
 import StopWatch from './StopWatch';
 import DigitDisplay from './DigitDisplay';
 import Popup from './Popup';
+import './Minesweeper.css';
 
 export default function MineGrid({ size, setSize, setIsPlaying }) {
 
@@ -480,7 +481,10 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                                             <Button type='submit' variant='contained' sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }}>Submit</Button>
                                         </form>}
                                     {uploading &&
-                                        <h2>Uploading... (This might take a while)</h2>}
+                                        <>
+                                            <h2>Uploading... (This might take a while)</h2>
+                                            <div className='spinner' style={{ margin: "auto" }} />
+                                        </>}
                                     {!uploading &&
                                         <Button variant='contained' onClick={handleClose} sx={{ width: "fit-content", margin: "auto", marginTop: "3%" }} color='error'>Go Back</Button>}
                                 </>}

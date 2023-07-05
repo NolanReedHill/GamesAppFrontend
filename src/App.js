@@ -8,9 +8,9 @@ import Minesweeper from "./pages/minesweeper/Minesweeper";
 import TicTacToeLandingPage from "./pages/ticTacToe/TicTacToeLandingPage";
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
-import Footer from "./components/footer/Footer";
 import { StreamChat } from 'stream-chat';
 import Cookies from 'universal-cookie';
+import { Chat } from 'stream-chat-react';
 
 export default function App() {
   const cookies = new Cookies();
@@ -51,17 +51,18 @@ export default function App() {
   return (
     <div className='App'>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <Navbar setIsAuth={setIsAuth} isAuth={isAuth} client={client} />
-          <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/minesweeper" element={<Minesweeper />} />
-            <Route path="/ticTacToe" element={<TicTacToeLandingPage isAuth={isAuth} client={client} />} />
-            <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
-            <Route path="/signup" element={<Signup setIsAuth={setIsAuth} />} />
-          </Routes>
-          <Footer />
-        </BrowserRouter>
+        <Chat client={client}>
+          <BrowserRouter>
+            <Navbar setIsAuth={setIsAuth} isAuth={isAuth} client={client} />
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/minesweeper" element={<Minesweeper />} />
+              <Route path="/ticTacToe" element={<TicTacToeLandingPage isAuth={isAuth} />} />
+              <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
+              <Route path="/signup" element={<Signup setIsAuth={setIsAuth} />} />
+            </Routes>
+          </BrowserRouter>
+        </Chat>
       </ThemeProvider>
     </div>
   )

@@ -7,8 +7,6 @@ import { IconButton, ButtonGroup, Divider } from '@mui/material';
 
 export default function Homepage() {
 
-
-
     return (
         <>
             <img src={background} className='background' alt='Board game pieces' />

@@ -180,7 +180,10 @@ export default function Minesweeper() {
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />
                         </> :
-                        <h1>Loading Leaderboard...</h1>
+                        <>
+                            <h1>Loading Leaderboard...</h1>
+                            <div className='spinner' style={{ margin: "auto" }} />
+                        </>
                     }
 
                     handleClose={changeIsLeaderboard}
