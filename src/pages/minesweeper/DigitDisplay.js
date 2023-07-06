@@ -36,6 +36,6 @@ export default function DigitDisplay({ digit }) {
     }
 
     return (
-        <Typography color={whichColor} sx={{ margin: "auto", fontSize: "1.5vw", }}>{digit}</Typography>
+        <Typography color={whichColor} sx={{ margin: "auto", fontSize: "calc(1.5vw+12px)", }}>{digit}</Typography>
     )
 }

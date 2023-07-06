@@ -407,6 +407,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                 </div>
                 :
                 <div tabIndex="0" className='gridBox' onMouseLeave={() => setWhichSquareHover(-1)}
+                    style={{ minWidth: size === 64 ? "300px" : size === 196 ? "400px" : "500px" }}
                     onKeyDown={(e) => {
                         if (e.key === " ")
                             e.preventDefault()
@@ -418,7 +419,7 @@ export default function MineGrid({ size, setSize, setIsPlaying }) {
                         <h3 style={{ textAlign: "left", marginTop: "0", marginLeft: "5%" }}>Time:</h3>
                         <StopWatch numBoxes={numBoxes} bombsVisible={bombsVisible} isWin={isWin} setFinalTime={setFinalTime} />
                     </div>
-                    <Grid container columns={Math.sqrt(size)} width={"100%"} sx={{ margin: "auto", aspectRatio: "1", marginBottom: "5%" }}>
+                    <Grid container columns={Math.sqrt(size)} sx={{ margin: "auto", aspectRatio: "1", marginBottom: "5%" }}>
                         {numBoxes.map((element) =>
                             <Grid item xs={1} key={element.key} sx={{ aspectRatio: "1" }}>
                                 <div

@@ -1,4 +1,7 @@
-import { Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
+import {
+    Button, ButtonGroup, IconButton, Table, TableBody, TableCell,
+    TableContainer, TableHead, TableRow, Paper, TablePagination, Checkbox, FormControlLabel, FormControl, FormGroup, FormLabel
+} from '@mui/material';
 import { useState, useEffect } from 'react';
 import Grid from './Grid';
 import "./Minesweeper.css";
@@ -10,10 +13,9 @@ import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import Popup from './Popup';
 import HelpIcon from '@mui/icons-material/Help';
+import useWindowSize from '../../components/navbar/useWindowSize';
 
 export default function Minesweeper() {
-
-
 
     const [size, setSize] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -26,6 +28,14 @@ export default function Minesweeper() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [showRules, setShowRules] = useState(false);
     const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+    const [toggleSongs, setToggleSongs] = useState(false);
+
+    const windowSize = useWindowSize();
+
+    useEffect(() => {
+        if (windowSize.width > 600)
+            setToggleSongs(false);
+    }, [windowSize])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -78,21 +88,27 @@ export default function Minesweeper() {
     }
 
     return (
-        <>
-            <h1>Minesweeper</h1>
-            <div className='topLeft'>
-                <IconButton sx={{ width: "fit-content" }} onClick={changeShowRules}>
-                    <HelpIcon />
-                </IconButton>
-                <Button sx={{ color: "black", }} onClick={changeIsLeaderboard}>Leaderboard</Button>
-                <Sound
-                    playStatus={(isPlaying && volume) ? Sound.status.PLAYING : Sound.status.PAUSED}
-                    volume={30}
-                    url={music}
-                    loop={true}
-                />
+        <>  <div className='topLeft'
+            style={{
+                flexDirection: windowSize.width > 600 ? "column-reverse" : "row", position: windowSize.width > 600 ? "fixed" : "relative",
+                top: windowSize.width > 600 ? "8%" : "inherit", width: windowSize.width > 600 ? "fit-content" : "100%", justifyContent: "space-between"
+            }}>
+            <IconButton sx={{ width: "fit-content" }} onClick={changeShowRules}>
+                <HelpIcon />
+            </IconButton>
+            <Button sx={{ color: "black", }} onClick={changeIsLeaderboard}>Leaderboard</Button>
+            <Sound
+                playStatus={(isPlaying && volume) ? Sound.status.PLAYING : Sound.status.PAUSED}
+                volume={30}
+                url={music}
+                loop={true}
+            />
+            {windowSize.width > 600 ?
                 <details style={{ marginLeft: "7%" }}>
-                    <summary style={{ marginBottom: "5%", marginTop: "5%", }} className='songSummary'>SONGS</summary>
+                    <summary style={{
+                        marginBottom: "5%", marginTop: "5%"
+                    }}
+                        className='songSummary'>SONGS</summary>
                     <details-menu>
                         <ButtonGroup orientation='vertical' size='small' >
                             <Button sx={{ color: "black", borderColor: "black" }}
@@ -103,14 +119,35 @@ export default function Minesweeper() {
                                 disabled={music === raucousRoulette} onClick={() => setMusic(raucousRoulette)}>Raucous Roulette</Button>
                         </ButtonGroup>
                     </details-menu>
-                </details>
-                <IconButton onClick={toggleVolume} >
-                    Music
-                    {volume ?
-                        <VolumeUpIcon /> :
-                        <VolumeOffIcon />}
-                </IconButton>
-            </div>
+                </details> :
+                <Button sx={{ color: "black" }} onClick={() => setToggleSongs(true)}>Songs</Button>}
+            {toggleSongs &&
+                <Popup
+                    content={<>
+                        <FormControl>
+                            <FormLabel >Choose Song</FormLabel>
+                            <FormGroup >
+                                <FormControlLabel control={<Checkbox checked={music === grazeTheRoof} disabled={music === grazeTheRoof}
+                                    onClick={() => setMusic(grazeTheRoof)} />} label='Graze the Roof' sx={{ width: "fit-content" }} />
+                                <FormControlLabel control={<Checkbox checked={music === checkerKnights} disabled={music === checkerKnights}
+                                    onClick={() => setMusic(checkerKnights)} />} label='Checker Knights' sx={{ width: "fit-content" }} />
+                                <FormControlLabel control={<Checkbox checked={music === raucousRoulette} disabled={music === raucousRoulette}
+                                    onClick={() => setMusic(raucousRoulette)} />} label='Raucous Roulette' sx={{ width: "fit-content" }} />
+                            </FormGroup>
+                        </FormControl>
+
+                    </>}
+                    handleClose={() => setToggleSongs(false)}
+                />}
+            <IconButton onClick={toggleVolume} >
+                Music
+                {volume ?
+                    <VolumeUpIcon /> :
+                    <VolumeOffIcon />}
+            </IconButton>
+        </div>
+            <h1>Minesweeper</h1>
+
             {size === 0 &&
                 <div className='buttonBox'>
                     <Button variant='contained' sx={{ margin: "auto" }} onClick={() => {
@@ -199,6 +236,9 @@ export default function Minesweeper() {
                         <h3>Left Click: reveal a square.</h3>
                         <h3>Right Click: Flag a square.</h3>
                         <h3>Spacebar: Flag a square or reveal adjacent squares. </h3>
+                        <h2>Mobile Controls:</h2>
+                        <h3>Short tap to reveal a square.</h3>
+                        <h3>Long tap to flag a square.</h3>
                     </>}
                 />}
         </>

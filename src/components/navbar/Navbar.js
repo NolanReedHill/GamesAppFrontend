@@ -1,16 +1,27 @@
-import { AppBar, Toolbar, Button, Box, IconButton, ButtonGroup, Typography, Snackbar, Alert, Dialog, DialogActions, DialogTitle, DialogContent } from '@mui/material'
-import HomeIcon from '@mui/icons-material/Home'
-import { Link } from 'react-router-dom'
+import {
+    AppBar, Toolbar, Button, Box, IconButton, ButtonGroup, Typography, Snackbar,
+    Alert, Dialog, DialogActions, DialogTitle, Drawer, List, ListItem, ListItemButton, ListItemText, Divider
+} from '@mui/material'
+import HomeIcon from '@mui/icons-material/Home';
+import MenuIcon from "@mui/icons-material/Menu";
+import { Link } from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useState } from 'react';
+import CloseIcon from "@mui/icons-material/Close";
+import { useState, useEffect } from 'react';
 import Cookies from "universal-cookie";
+import useWindowSize from './useWindowSize';
 
 export default function Navbar({ setIsAuth, isAuth, client }) {
 
+    const allGames = ["minesweeper", "ticTacToe"];
+
     const [logout, setLogout] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [openDrawer, setOpenDrawer] = useState(false);
     const cookies = new Cookies();
+
+    const size = useWindowSize();
 
     const logOut = () => {
         setLogout(true);
@@ -25,19 +36,70 @@ export default function Navbar({ setIsAuth, isAuth, client }) {
         setIsAuth(false);
     };
 
+    useEffect(() => {
+        if (size.width > 800)
+            setOpenDrawer(false);
+    }, [size])
+
     return (
         <>
             <AppBar >
                 <Toolbar>
-                    <IconButton component={Link} to={"/"}>
-                        <HomeIcon sx={{ color: "white" }} />
-                    </IconButton>
-                    {cookies.get("username") &&
-                        <Typography sx={{ marginRight: "1%", marginTop: ".1%" }}>Hello, {cookies.get("username")}</Typography>}
-                    <ButtonGroup disableElevation >
-                        <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/minesweeper"}>Minesweeper</Button>
-                        <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/ticTacToe"}>Tic Tac Toe</Button>
-                    </ButtonGroup>
+                    {size.width > 800 &&
+                        <>
+                            <IconButton component={Link} to={"/"}>
+                                <HomeIcon sx={{ color: "white" }} />
+                            </IconButton>
+                            {cookies.get("username") &&
+                                <Typography sx={{ marginRight: "1%", marginTop: ".1%" }}>Hello, {cookies.get("username")}</Typography>}
+                            <ButtonGroup disableElevation >
+                                <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/minesweeper"}>Minesweeper</Button>
+                                <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/ticTacToe"}>Tic Tac Toe</Button>
+                            </ButtonGroup>
+                        </>}
+                    {size.width < 800 &&
+                        <>
+                            <IconButton sx={{ color: "white" }} onClick={() => setOpenDrawer(true)}>
+                                <MenuIcon fontSize='large' />
+                            </IconButton>
+                            <Drawer
+                                anchor='left'
+                                open={openDrawer}
+                                onClose={() => setOpenDrawer(false)}
+                            >
+                                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                    <IconButton sx={{ color: "black" }} component={Link} to={"/"} onClick={() => setOpenDrawer(false)}>
+                                        <HomeIcon fontSize='large' />
+                                    </IconButton>
+                                    {cookies.get("username") &&
+                                        <h2>Hello, {cookies.get("username")}</h2>}
+                                    <IconButton onClick={() => setOpenDrawer(false)}>
+                                        <CloseIcon fontSize="large" />
+                                    </IconButton>
+                                </Box>
+                                <Divider color="black" />
+                                <h3>All Games:</h3>
+                                <List
+                                    disablePadding
+                                    sx={{ width: { xs: "70vw", sm: "300px" }, mb: "75px" }}>
+                                    {allGames.map((game, index) =>
+                                        <ListItem key={index} sx={{ py: "0" }}>
+                                            <ListItemButton
+                                                component={Link}
+                                                to={"/" + game}
+                                                onClick={() => setOpenDrawer(false)}>
+                                                <ListItemText
+                                                    primary={game}
+                                                    primaryTypographyProps={{
+                                                        fontSize: "calc(16px + 0.3vw)",
+                                                    }} />
+                                            </ListItemButton>
+
+                                        </ListItem>
+                                    )}
+                                </List>
+                            </Drawer>
+                        </>}
                     {isAuth ?
                         <IconButton onClick={() => setIsOpen(true)} component={Link} to={"/"} title='Logout'>
                             <LogoutIcon sx={{ color: "white", position: "fixed", right: "2%" }} />
