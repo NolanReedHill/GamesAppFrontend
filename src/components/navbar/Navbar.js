@@ -45,7 +45,7 @@ export default function Navbar({ setIsAuth, isAuth, client }) {
         <>
             <AppBar >
                 <Toolbar>
-                    {size.width > 800 &&
+                    {size.width >= 800 &&
                         <>
                             <IconButton component={Link} to={"/"}>
                                 <HomeIcon sx={{ color: "white" }} />
