@@ -222,7 +222,6 @@ export default function TicTacToe() {
             return () => clearInterval(intervalRef.current);
         }
         if (timer === 0) {
-            console.log("hello")
             setGameOver(true);
         }
     }, [timer])

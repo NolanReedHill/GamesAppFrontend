@@ -16,6 +16,7 @@ export default function Navbar({ setIsAuth, isAuth, client }) {
 
     const allGames = ["minesweeper", "tic-tac-toe", "checkers"];
 
+
     const [logout, setLogout] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [openDrawer, setOpenDrawer] = useState(false);
@@ -40,7 +41,6 @@ export default function Navbar({ setIsAuth, isAuth, client }) {
         if (size.width > 800)
             setOpenDrawer(false);
     }, [size]);
-
 
     return (
         <>

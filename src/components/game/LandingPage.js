@@ -26,18 +26,22 @@ export default function LandingPage({ isAuth, game, gameName }) {
         let IDs = [client.userID, response.users[0].id];
         IDs.sort();
         let stringIDs = IDs[0] + IDs[1];
-        console.log(IDs);
-        console.log(stringIDs);
         const newChannel = await client.channel("messaging", (gameName + stringIDs).substring(0, 64), {
             members: [client.userID, response.users[0].id],
         });
-
         await newChannel.watch();
+        await newChannel.disableSlowMode();
         setChannel(newChannel);
     };
 
     async function disconnect() {
         await channel.stopWatching();
+        if (channel && channel.state.watcher_count === 1) {
+            const tempChannel = channel;
+            setChannel(null);
+            await tempChannel.delete();
+        }
+
         setChannel(null);
     }
 
