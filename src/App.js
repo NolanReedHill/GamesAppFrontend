@@ -6,6 +6,7 @@ import Navbar from "./components/navbar/Navbar";
 import Homepage from "./pages/homepage/Homepage";
 import Minesweeper from "./pages/minesweeper/Minesweeper";
 import TicTacToeLandingPage from "./pages/ticTacToe/TicTacToeLandingPage";
+import CheckersLandingPage from './pages/checkers/CheckersLandingPage';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import { StreamChat } from 'stream-chat';
@@ -57,7 +58,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Homepage />} />
               <Route path="/minesweeper" element={<Minesweeper />} />
-              <Route path="/ticTacToe" element={<TicTacToeLandingPage isAuth={isAuth} />} />
+              <Route path="/checkers" element={<CheckersLandingPage isAuth={isAuth} />} />
+              <Route path="/tic-tac-toe" element={<TicTacToeLandingPage isAuth={isAuth} />} />
               <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
               <Route path="/signup" element={<Signup setIsAuth={setIsAuth} />} />
             </Routes>

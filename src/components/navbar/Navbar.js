@@ -14,7 +14,7 @@ import useWindowSize from './useWindowSize';
 
 export default function Navbar({ setIsAuth, isAuth, client }) {
 
-    const allGames = ["minesweeper", "ticTacToe"];
+    const allGames = ["minesweeper", "tic-tac-toe", "checkers"];
 
     const [logout, setLogout] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +39,8 @@ export default function Navbar({ setIsAuth, isAuth, client }) {
     useEffect(() => {
         if (size.width > 800)
             setOpenDrawer(false);
-    }, [size])
+    }, [size]);
+
 
     return (
         <>
@@ -53,8 +54,11 @@ export default function Navbar({ setIsAuth, isAuth, client }) {
                             {cookies.get("username") &&
                                 <Typography sx={{ marginRight: "1%", marginTop: ".1%" }}>Hello, {cookies.get("username")}</Typography>}
                             <ButtonGroup disableElevation >
-                                <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/minesweeper"}>Minesweeper</Button>
-                                <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/ticTacToe"}>Tic Tac Toe</Button>
+                                {allGames.map((game, index) =>
+                                    <Button sx={{ color: "white" }} className='navButtons' component={Link} to={"/" + game} key={index}>
+                                        {game.replaceAll("-", " ")}
+                                    </Button>
+                                )}
                             </ButtonGroup>
                         </>}
                     {size.width < 800 &&

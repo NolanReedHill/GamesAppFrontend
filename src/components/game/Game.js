@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import TicTacToe from './TicTacToe';
 import { Window, MessageList, MessageInput } from "stream-chat-react";
 import { Button, Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
-import './TicTacToe.css';
 
-function Game({ channel, setChannel }) {
+function Game({ channel, disconnect, game }) {
 
     const [playersJoined, setPlayersJoined] = useState(
         channel.state.watcher_count === 2
@@ -14,6 +12,7 @@ function Game({ channel, setChannel }) {
     channel.on("user.watching.start", (event) => {
         setPlayersJoined(event.watcher_count === 2);
     });
+
     if (!playersJoined) {
         return (
             <>
@@ -24,14 +23,9 @@ function Game({ channel, setChannel }) {
 
     }
 
-    async function leaveGame() {
-        await channel.stopWatching();
-        setChannel(null);
-    }
-
     return (
         <>
-            <TicTacToe />
+            {game}
             <div className="chatContainer">
                 <Window>
                     <MessageList
@@ -65,7 +59,7 @@ function Game({ channel, setChannel }) {
                 <DialogActions>
                     <Button onClick={() => {
                         setIsOpen(false);
-                        leaveGame();
+                        disconnect();
                     }}
                         color="error">
                         Confirm</Button>

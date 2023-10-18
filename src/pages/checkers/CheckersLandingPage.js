@@ -1,12 +1,12 @@
-import "./TicTacToe.css";
-import { useState } from "react";
-import TicTacToe from './TicTacToe';
+import './Checkers.css';
+import LandingPage from '../../components/game/LandingPage';
+import Checkers from './Checkers';
+import { useState } from 'react';
 import { IconButton } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
-import LandingPage from "../../components/game/LandingPage";
 import Popup from "../minesweeper/Popup";
 
-export default function TicTacToeLandingPage({ isAuth }) {
+export default function CheckersLandingPage(isAuth) {
 
     const [showRules, setShowRules] = useState(false);
 
@@ -16,9 +16,9 @@ export default function TicTacToeLandingPage({ isAuth }) {
                 <HelpIcon />
             </IconButton>
 
-            <h1>Tic Tac Toe</h1>
+            <h1>Checkers</h1>
 
-            <LandingPage isAuth={isAuth} game={<TicTacToe />} gameName="tic-tac-toe" />
+            <LandingPage isAuth={isAuth} game={<Checkers />} gameName="checkers" />
             {showRules &&
                 <Popup
                     content={
