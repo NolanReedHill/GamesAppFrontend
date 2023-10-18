@@ -12,6 +12,7 @@ import Signup from './components/auth/Signup';
 import { StreamChat } from 'stream-chat';
 import Cookies from 'universal-cookie';
 import { Chat } from 'stream-chat-react';
+import Placeholder from './pages/checkers/Placeholder';
 
 export default function App() {
   const cookies = new Cookies();
@@ -58,7 +59,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Homepage />} />
               <Route path="/minesweeper" element={<Minesweeper />} />
-              <Route path="/checkers" element={<CheckersLandingPage isAuth={isAuth} />} />
+              <Route path="/checkers" element={<Placeholder />} />
               <Route path="/tic-tac-toe" element={<TicTacToeLandingPage isAuth={isAuth} />} />
               <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
               <Route path="/signup" element={<Signup setIsAuth={setIsAuth} />} />
